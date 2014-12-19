@@ -1,15 +1,4 @@
-var damage = function (force, armor) {
-    'use strict';
-    if (force > armor) {
-        return 'First';
-    }
-    return 'Second';
-    
-};
-
-
-var hero_one = {forc : 5, res : 5, arm : 5};
-var hero_two = {forc : 2, res : 2, arm : 1};
+var characters = {};
 var rollDice = function (value) {
     'use strict';
     var counter = 0, totalDamage = 0;
@@ -20,6 +9,42 @@ var rollDice = function (value) {
     return totalDamage;
 };
 
+var calculaCaracteristica = function () {
+    'use strict';
+    return Math.ceil(Math.random() * 5);
+};
+
+var verifySkill = function (limit) {
+    'use strict';
+    var value_skill;
+    do {
+        value_skill = calculaCaracteristica();
+    } while (value_skill > limit);
+    return value_skill;
+};
+
+var create = function (name, limit) {
+    'use strict';
+    var character = {name : name}, value_skill;
+    character.forc = verifySkill(limit);
+    if (limit > 0) {
+        value_skill = verifySkill(limit);
+        limit -= value_skill;
+        character.res = value_skill;
+        
+    } else {
+        character.res = 0;
+    }
+    if (limit > 0) {
+        value_skill = verifySkill(limit);
+        limit -= value_skill;
+        character.arm = verifySkill(limit);
+    } else {
+        character.arm = 0;
+    }
+    
+    return character;
+};
 
 var battle = function (hero_one, hero_two) {
     'use strict';
@@ -43,3 +68,11 @@ var battle = function (hero_one, hero_two) {
     return "Jogador 1 ganhou";
 };
 
+var start_battle = function () {
+    'use strict';
+    characters = new Array();
+    characters.push(create("marco",10));
+    characters.push(create("robsao",10));
+    console.log(characters);
+    battle(characters[0], characters[1]);
+}
