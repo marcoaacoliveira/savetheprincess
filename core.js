@@ -1,4 +1,4 @@
-var characters = {};
+
 var rollDice = function (value) {
     'use strict';
     var counter = 0, totalDamage = 0;
@@ -26,53 +26,64 @@ var verifySkill = function (limit) {
 var create = function (name, limit) {
     'use strict';
     var character = {name : name}, value_skill;
-    character.forc = verifySkill(limit);
+    character.forc = 0;
+    character.arm = 0;
+    character.res = 0;
+    if(limit > 0){
+        value_skill = verifySkill(limit);
+        limit -= value_skill;
+        character.forc = verifySkill(limit);
+    
+    }
     if (limit > 0) {
         value_skill = verifySkill(limit);
         limit -= value_skill;
         character.res = value_skill;
         
-    } else {
-        character.res = 0;
     }
     if (limit > 0) {
         value_skill = verifySkill(limit);
         limit -= value_skill;
         character.arm = verifySkill(limit);
-    } else {
-        character.arm = 0;
     }
     
+    character.max_hp = character.res * 5;
+    character.current_hp = character.max_hp;
+    character.attack = function(){
+        return rollDice(character.forc);
+    };
+    character.defend = function(){
+        return rollDice(character.arm);
+    }
     return character;
 };
 
 var battle = function (hero_one, hero_two) {
     'use strict';
-    var hp_one = hero_one.res * 5, hp_two = hero_two.res * 5, totalDamage = 0, totalArmor = 0;
-    while (hp_one >= 0 && hp_two >= 0) {
-        totalDamage = rollDice(hero_one.forc);
-        totalArmor = rollDice(hero_two.arm);
+    var totalDamage = 0, totalArmor = 0;
+    while (hero_one.current_hp >= 0 && hero_two.current_hp >= 0) {
+        totalDamage = hero_one.attack();
+        totalArmor =  hero_two.defend();
         if (totalDamage > totalArmor) {
-            hp_two = hp_two - (totalDamage - totalArmor);
+            hero_two.current_hp = hero_two.current_hp - (totalDamage - totalArmor);
         }
-        totalDamage = rollDice(hero_two.forc);
-        totalArmor = rollDice(hero_one.arm);
+        totalDamage = hero_two.attack();
+        totalArmor = hero_one.defend();
         if (totalDamage > totalArmor) {
-            hp_one = hp_one - (totalDamage - totalArmor);
-        }
-        
+            hero_one.current_hp = hero_one.current_hp - (totalDamage - totalArmor);
+        }        
     }
-    if (hp_one <= 0) {
-        return "Jogador 2 ganhou";
+    if (hero_one.current_hp <= 0) {
+        return hero_two;
     }
-    return "Jogador 1 ganhou";
+    return hero_one;
 };
 
 var start_battle = function () {
     'use strict';
-    characters = new Array();
-    characters.push(create("marco",10));
-    characters.push(create("robsao",10));
-    console.log(characters);
-    battle(characters[0], characters[1]);
+    var characters = [];
+    characters.push(create("marco", 10));
+    characters.push(create("robsao", 10));
+
+    return battle(characters[0], characters[1]);
 }
