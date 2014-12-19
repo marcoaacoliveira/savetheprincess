@@ -1,4 +1,5 @@
 
+var characters = [];
 var rollDice = function (value) {
     'use strict';
     var counter = 0, totalDamage = 0;
@@ -23,9 +24,23 @@ var verifySkill = function (limit) {
     return Math.max(value_skill, 0);
 };
 
+var Character = function(attr){
+    this.name = attr.name;
+    this.forc;
+    this.arm;
+    this.res;
+}
+Character.prototype.attack = function () {
+    return rollDice(this.forc);
+};
+    
+Character.prototype.defend = function () {
+    return rollDice(this.arm);
+};
+
 var createCharacter = function (name, limit) {
     'use strict';
-    var character = {name : name}, value_skill;
+    var character = new Character({name : name}), value_skill;
     character.forc = 0;
     character.arm = 0;
     character.res = 0;
@@ -49,13 +64,7 @@ var createCharacter = function (name, limit) {
     
     character.max_hp = character.res * 5;
     character.current_hp = character.max_hp;
-    character.attack = function () {
-        return rollDice(character.forc);
-    };
-    character.defend = function () {
-        return rollDice(character.arm);
-    };
-    return character;
+    return character;   
 };
 
 var turn = function (attacker, defender) {
@@ -70,19 +79,14 @@ var turn = function (attacker, defender) {
 
 var battle = function (hero_one, hero_two) {
     'use strict';
-    var totalDamage = 0, totalArmor = 0;
-    while (hero_one.current_hp > 0 && hero_two.current_hp > 0) {
-        if (hero_one.current_hp > 0) {
-            hero_two = turn(hero_one, hero_two);
-        }
-        if (hero_two.current_hp > 0) {
-            hero_one = turn(hero_two, hero_one);
-        }
+    if (hero_one.current_hp > 0) {
+        hero_two = turn(hero_one, hero_two);
+        console.log(hero_two.current_hp);
     }
-    if (hero_one.current_hp <= 0) {
-        return hero_two;
+    if (hero_two.current_hp > 0) {
+        hero_one = turn(hero_two, hero_one);
+        console.log(hero_one.current_hp);
     }
-    return hero_one;
 };
 
 var print_character = function (hero) {
@@ -98,12 +102,26 @@ var print_character = function (hero) {
     display.appendChild(no);
 }
 
+//batalhas
+
+characters.push(createCharacter('marco', 10));
+print_character(characters[0]);
+characters.push(createCharacter('robsao', 10));
+print_character(characters[1]);
+
+
 var start_battle = function () {
     'use strict';
-    var characters = [];
-    characters.push(createCharacter('marco', 10));
-    print_character(characters[0]);
-    characters.push(createCharacter('robsao', 10));
-    print_character(characters[1]);
-    return battle(characters[0], characters[1]);
+    if(characters[0].current_hp > 0 && characters[1].current_hp > 0){
+        battle(characters[0],characters[1]);
+    }
+    else if(characters[0]<=0){
+        console.log(characters[0].name + " morreu");
+    }
+    else{
+        console.log(characters[1].name +" morreu");
+    }
 };
+
+var button = document.querySelector('button');
+button.addEventListener('click', start_battle);
