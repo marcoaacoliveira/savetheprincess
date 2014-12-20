@@ -4,6 +4,23 @@
     </head>
     <body>
         <button>Atacar</button>
+        <div id="character">
+            <form id="create_form" method="GET">
+                Nome:
+                <input type="text" name="char[name]" id="char_name"/>
+                <br/>
+                Forca:
+                <input type="text" name="char[forc]" id="char_forc"/>
+                <br/>
+                Resistencia:
+                <input type="text" name="char[res]" id="char_res"/>
+                <br/>
+                Armadura:
+                <input type="text" name="char[arm]" id="char_arm"/>
+                <br/>
+                <input type="submit" value="Criar"/>
+            </form>
+        </div>
         <div id="display">
             <div id="battle_log">
             </div>
