@@ -81,11 +81,11 @@ var battle = function (hero_one, hero_two) {
     'use strict';
     if (hero_one.current_hp > 0) {
         hero_two = turn(hero_one, hero_two);
-        console.log(hero_two.current_hp);
+        print_battle_log(hero_one,hero_two);
     }
     if (hero_two.current_hp > 0) {
         hero_one = turn(hero_two, hero_one);
-        console.log(hero_one.current_hp);
+        print_battle_log(hero_one,hero_two);
     }
 };
 
@@ -102,6 +102,13 @@ var print_character = function (hero) {
     display.appendChild(no);
 }
 
+var print_battle_log = function (hero_one,hero_two){
+    var battle_log = document.getElementById('battle_log');
+        
+    battle_log.innerHTML = 'name: '+hero_one.name + ' - HP: '+hero_one.current_hp+'/'+hero_one.max_hp+'<br/>'+ 'name: '+hero_two.name + ' - HP: '+hero_two.current_hp+'/'+hero_two.max_hp+'';
+
+}
+
 //batalhas
 
 characters.push(createCharacter('marco', 10));
@@ -115,7 +122,7 @@ var start_battle = function () {
     if(characters[0].current_hp > 0 && characters[1].current_hp > 0){
         battle(characters[0],characters[1]);
     }
-    else if(characters[0]<=0){
+    else if(characters[0].current_hp<=0){
         console.log(characters[0].name + " morreu");
     }
     else{
